@@ -1,0 +1,768 @@
+<!-- image.html — Image tab fragment -->
+
+<!-- Core Inputs Card -->
+<div class="card">
+  <div class="grid2">
+    <div>
+      <label for="offer">What are you promoting?</label>
+      <textarea id="offer" placeholder="Example: SwiftNote AI — turns meeting audio into clean notes + action items in minutes. Works for busy teams that hate writing minutes."></textarea>
+    </div>
+    <div>
+      <label for="audience">Who is this for?</label>
+      <input id="audience" placeholder="Example: students, small business owners, HR teams" />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <div class="cap">Platform</div>
+      <select id="platform">
+        <option value="IG">Instagram</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="TikTok">TikTok</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <div class="cap">Tone</div>
+      <select id="tone">
+        <option value="friendly">Friendly</option>
+        <option value="formal">Formal</option>
+        <option value="bold">Bold</option>
+        <option value="funny">Funny</option>
+        <option value="luxury">Luxury</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <div class="cap">Language</div>
+      <select id="language">
+        <option value="id">Indonesian</option>
+        <option value="en">English</option>
+        <option value="bilingual">Bilingual</option>
+      </select>
+    </div>
+  </div>
+
+  <details>
+    <summary>Advanced options</summary>
+    <div class="miniRow" style="display:flex;flex-wrap:wrap;gap:12px;">
+      <div class="field" style="min-width:200px;flex:1;">
+        <div class="cap">Price / promo</div>
+        <input id="price_promo" placeholder="Example: Rp99k/week, or 50% off today" />
+      </div>
+      <div class="field" style="min-width:140px;">
+        <div class="cap">CTA preference</div>
+        <select id="cta_preference">
+          <option value="">Auto</option>
+          <option value="DM">DM</option>
+          <option value="link">Link</option>
+          <option value="comment">Comment</option>
+        </select>
+      </div>
+    </div>
+  </details>
+
+  <div class="row" style="justify-content:space-between;">
+    <div id="status" class="status"></div>
+    <div class="flex gap-2">
+      <button class="btnGhost btnSm" type="button" id="btnReset">Reset all</button>
+      <button class="btnGhost btnSm" type="button" id="btnClearOutputs">Clear outputs</button>
+    </div>
+  </div>
+</div>
+
+<!-- Image Controls -->
+<div class="split">
+  <div>
+    <div class="card">
+      <div class="row">
+        <div class="field" style="min-width:140px;">
+          <div class="cap">Aspect ratio</div>
+          <select id="aspect">
+            <option value="1:1">1:1 Square</option>
+            <option value="4:5">4:5 Portrait</option>
+            <option value="9:16">9:16 Story/Reels</option>
+            <option value="16:9">16:9 Landscape</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <div class="title" style="font-weight:700;margin-bottom:8px;">Brand image (optional)</div>
+      <div class="muted">Upload your logo or product image</div>
+      <div class="row mt-2">
+        <div class="field" style="flex:1;min-width:260px;">
+          <input id="brandFile" type="file" accept="image/png,image/jpeg,image/webp" style="padding:10px;background:var(--bg-secondary);" />
+        </div>
+        <button class="btnSm" type="button" id="btnUploadBrand">Upload</button>
+        <button class="btnGhost btnSm" type="button" id="btnClearBrand">Clear</button>
+      </div>
+      <div class="muted mt-2" id="brandHint"></div>
+
+      <div class="hr"></div>
+
+      <div class="title" style="font-weight:700;margin-bottom:12px;">Layout style</div>
+      <div class="layoutGrid" id="layoutGrid"></div>
+      <input id="layout_id" class="hidden" />
+
+      <details>
+        <summary>Advanced image settings</summary>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;">
+          <div class="field" style="min-width:200px;flex:1;">
+            <div class="cap">Brand name (logo text)</div>
+            <input id="brand_name" placeholder="e.g. SwiftNote" />
+          </div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <div class="cap">Color palette</div>
+          <div class="paletteWrap">
+            <div class="field" style="min-width:120px;">
+              <input id="pickColor" type="color" value="#6366f1" style="height:44px;padding:4px;background:var(--bg-secondary);border-radius:var(--radius-md);" />
+            </div>
+            <div class="field" style="min-width:180px;flex:1;">
+              <div class="hexRow">
+                <input id="hexColor" class="hexIn" value="#6366f1" />
+                <button class="btnSm" type="button" id="btnAddPalette">Add</button>
+                <button class="btnGhost btnSm" type="button" id="btnRandPalette">Random</button>
+                <button class="btnGhost btnSm" type="button" id="btnClearPalette">Clear</button>
+              </div>
+            </div>
+            <div class="swatch" id="swatch"></div>
+          </div>
+          <div class="paletteList" id="paletteList"></div>
+          <input id="palette_hex" class="hidden" />
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;">
+          <div class="field" style="min-width:200px;flex:1;">
+            <div class="cap">Headline (on image)</div>
+            <input id="headline" placeholder="e.g. Turn meeting audio into action items" />
+          </div>
+          <div class="field" style="min-width:200px;flex:1;">
+            <div class="cap">Subheadline (on image)</div>
+            <input id="subheadline" placeholder="e.g. No typing. Just clean notes." />
+          </div>
+        </div>
+      </details>
+
+      <div class="row mt-4">
+        <button class="btnPrimary" type="button" id="btnGenImgSimple">Generate (Simple)</button>
+        <button class="btnSecondary" type="button" id="btnGenImgCreative">Generate (Creative)</button>
+        <button class="btnGhost" type="button" id="btnImgHistory">Refresh history</button>
+      </div>
+    </div>
+
+    <!-- Image output with inline loading -->
+    <div id="imageOut" class="imageGrid"></div>
+  </div>
+
+  <div class="sideCard hidden" id="editPanel">
+    <div class="title" style="display:flex;align-items:center;gap:8px;">
+      <span>Edit image</span>
+      <span class="muted" style="font-size:12px;font-weight:400;">Create new version</span>
+    </div>
+    
+    <div class="muted text-sm mb-2">Selected</div>
+    <div id="selInfo" class="muted text-xs" style="font-family:monospace;">None</div>
+    
+    <div class="hr"></div>
+
+    <div class="field">
+      <div class="cap">Mode</div>
+      <select id="edit_mode">
+        <option value="">Keep current</option>
+        <option value="simple">Simple</option>
+        <option value="creative">Creative</option>
+      </select>
+    </div>
+
+    <details class="mt-3">
+      <summary>More options</summary>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;">
+        <div class="field" style="min-width:120px;flex:1;">
+          <div class="cap">Tone</div>
+          <select id="edit_tone">
+            <option value="">Keep</option>
+            <option value="friendly">Friendly</option>
+            <option value="formal">Formal</option>
+            <option value="bold">Bold</option>
+            <option value="funny">Funny</option>
+            <option value="luxury">Luxury</option>
+          </select>
+        </div>
+        <div class="field" style="min-width:120px;flex:1;">
+          <div class="cap">Aspect ratio</div>
+          <select id="edit_aspect">
+            <option value="">Keep</option>
+            <option value="1:1">1:1</option>
+            <option value="4:5">4:5</option>
+            <option value="9:16">9:16</option>
+            <option value="16:9">16:9</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;">
+        <div class="field" style="min-width:120px;flex:1;">
+          <div class="cap">Layout</div>
+          <select id="edit_layout">
+            <option value="">Keep</option>
+            <option value="L1">Top-left</option>
+            <option value="L2">Centered</option>
+            <option value="L3">Split</option>
+            <option value="L4">Badge</option>
+          </select>
+        </div>
+        <div class="field" style="min-width:120px;flex:1;">
+          <div class="cap">Language</div>
+          <select id="edit_language">
+            <option value="">Keep</option>
+            <option value="id">Indonesian</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;">
+        <div class="field" style="min-width:200px;flex:1;">
+          <div class="cap">Headline</div>
+          <input id="edit_headline" placeholder="Keep current" />
+        </div>
+        <div class="field" style="min-width:200px;flex:1;">
+          <div class="cap">Subheadline</div>
+          <input id="edit_subheadline" placeholder="Keep current" />
+        </div>
+      </div>
+
+      <div style="margin-top:12px;">
+        <div class="cap">Palette (comma hex)</div>
+        <input id="edit_palette_hex" placeholder="e.g. #111111,#FFFFFF,#6366f1" />
+      </div>
+
+      <div style="margin-top:12px;">
+        <div class="cap">Logo text</div>
+        <input id="edit_logo_text" placeholder="Keep current" />
+      </div>
+    </details>
+
+    <button class="btnPrimary w-full mt-4" type="button" id="btnApplyEdit">Apply edit</button>
+
+    <div class="hr"></div>
+
+    <div class="title" style="font-size:14px;">History</div>
+    <div id="historyBox" class="muted text-sm mt-2">Click refresh history</div>
+  </div>
+</div>
+
+<!-- History Modal -->
+<div class="modalOverlay hidden" id="imgHistoryModal">
+  <div class="modalContent">
+    <div class="modalHeader">
+      <span>All Image History</span>
+      <button class="btnIcon btnGhost" type="button" id="imgModalClose" style="font-size:18px;">&#10005;</button>
+    </div>
+    <div class="modalBody" id="imgModalGrid"></div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   Image Tab Logic
+========================= */
+
+/* --- Layout picker --- */
+var LAYOUTS = [
+  { id: "L1", label: "Top-left", desc: "Headline top, CTA bottom-right",
+    thumb: "data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#1a1a25"/><rect x="10" y="10" width="50" height="8" fill="#6366f1" rx="2"/><rect x="10" y="22" width="35" height="6" fill="#8b5cf6" rx="2" opacity="0.7"/><rect x="60" y="75" width="30" height="10" fill="#6366f1" rx="5"/></svg>')
+  },
+  { id: "L2", label: "Centered", desc: "Centered text, bottom CTA",
+    thumb: "data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#1a1a25"/><rect x="20" y="35" width="60" height="8" fill="#6366f1" rx="2"/><rect x="25" y="47" width="50" height="6" fill="#8b5cf6" rx="2" opacity="0.7"/><rect x="30" y="80" width="40" height="10" fill="#6366f1" rx="5"/></svg>')
+  },
+  { id: "L3", label: "Split", desc: "Text left, visual right",
+    thumb: "data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#1a1a25"/><rect x="10" y="25" width="35" height="6" fill="#6366f1" rx="2"/><rect x="10" y="35" width="28" height="5" fill="#8b5cf6" rx="2" opacity="0.7"/><rect x="10" y="75" width="25" height="8" fill="#6366f1" rx="4"/><rect x="52" y="15" width="38" height="70" fill="#252535" rx="4" stroke="#6366f1" stroke-width="1"/></svg>')
+  },
+  { id: "L4", label: "Badge", desc: "Badge top, CTA bottom",
+    thumb: "data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#1a1a25"/><rect x="65" y="10" width="25" height="8" fill="#22c55e" rx="4"/><rect x="15" y="40" width="70" height="8" fill="#6366f1" rx="2"/><rect x="10" y="80" width="30" height="10" fill="#6366f1" rx="5"/></svg>')
+  },
+];
+
+function initLayouts() {
+  var grid = document.getElementById("layoutGrid");
+  grid.innerHTML = "";
+  for (var i = 0; i < LAYOUTS.length; i++) {
+    var it = LAYOUTS[i];
+    var el = document.createElement("div");
+    el.className = "layoutOpt";
+    el.dataset.id = it.id;
+    el.innerHTML = '<div class="layoutThumb"><img src="' + it.thumb + '" alt="' + it.label + '"/></div>' +
+      '<div class="layoutLabel">' + it.label + '</div>' +
+      '<div class="layoutDesc">' + it.desc + '</div>';
+    (function(item, elem) {
+      elem.addEventListener("click", function() {
+        document.querySelectorAll(".layoutOpt").forEach(function(x) { x.classList.remove("active"); });
+        elem.classList.add("active");
+        document.getElementById("layout_id").value = item.id;
+      });
+    })(it, el);
+    grid.appendChild(el);
+  }
+  if (grid.firstElementChild) grid.firstElementChild.classList.add("active");
+  document.getElementById("layout_id").value = LAYOUTS[0].id;
+}
+initLayouts();
+
+/* --- Palette UI --- */
+function isHex(s) { return /^#?[0-9a-fA-F]{6}$/.test(String(s||"").trim()); }
+function normHex(s) { s = String(s||"").trim(); if (!s.startsWith("#")) s = "#"+s; return s.toUpperCase(); }
+
+function renderPalette() {
+  window.palette = window.palette.slice(0, 4);
+  document.getElementById("palette_hex").value = window.palette.join(",");
+  document.getElementById("swatch").style.background = window.palette[0] || "#6366f1";
+  
+  var list = document.getElementById("paletteList");
+  list.innerHTML = window.palette.map(function(c, idx) {
+    return '<div class="colorChip">' +
+      '<span class="dot" style="background:' + c + '"></span>' +
+      '<span>' + c + '</span>' +
+      '<button class="btnGhost btnSm" type="button" onclick="removeColor(' + idx + ')" style="padding:4px 8px;">x</button>' +
+    '</div>';
+  }).join("") || '<span class="muted">No colors selected</span>';
+}
+
+function addPalette() {
+  var hex = document.getElementById("hexColor").value;
+  if (!isHex(hex)) { setBad("Invalid hex color"); return; }
+  var c = normHex(hex);
+  if (window.palette.includes(c)) return;
+  window.palette.push(c);
+  renderPalette();
+}
+
+function removeColor(i) { 
+  window.palette.splice(i, 1); 
+  renderPalette(); 
+}
+
+function clearPalette() { 
+  window.palette = []; 
+  renderPalette(); 
+}
+
+function randomPalette() {
+  function rnd() { return "#"+Math.floor(Math.random()*16777215).toString(16).padStart(6,"0").toUpperCase(); }
+  window.palette = [rnd(), rnd(), rnd(), rnd()];
+  renderPalette();
+}
+
+document.getElementById("pickColor").addEventListener("input", function(e) {
+  var c = e.target.value.toUpperCase();
+  document.getElementById("hexColor").value = c;
+  document.getElementById("swatch").style.background = c;
+});
+
+document.getElementById("hexColor").addEventListener("input", function(e) {
+  var v = e.target.value.trim();
+  if (isHex(v)) {
+    var c = normHex(v);
+    document.getElementById("pickColor").value = c;
+    document.getElementById("swatch").style.background = c;
+  }
+});
+
+document.getElementById("btnAddPalette").addEventListener("click", addPalette);
+document.getElementById("btnRandPalette").addEventListener("click", randomPalette);
+document.getElementById("btnClearPalette").addEventListener("click", clearPalette);
+renderPalette();
+
+/* --- Brand upload --- */
+async function uploadBrand() {
+  try {
+    var f = document.getElementById("brandFile").files[0];
+    if (!f) { setBad("Select an image first"); return; }
+
+    startProgress("Uploading brand image...");
+    var fd = new FormData();
+    fd.append("file", f);
+
+    var res = await fetch("/brand/upload", { method: "POST", body: fd });
+    var data = await res.json();
+    if (data.error_status) {
+      endProgress(false, "Upload failed");
+      return;
+    }
+
+    window.brandImageId = data.brand_image_id || "";
+    document.getElementById("brandHint").textContent = window.brandImageId ? "Uploaded: " + window.brandImageId.slice(0, 12) + "..." : "Uploaded";
+    endProgress(true, "Brand image uploaded");
+    showToast("Brand image uploaded");
+  } catch (e) {
+    endProgress(false, "Upload error");
+  }
+}
+
+function clearBrand() {
+  window.brandImageId = "";
+  document.getElementById("brandFile").value = "";
+  document.getElementById("brandHint").textContent = "";
+  setOk("Brand image cleared");
+}
+
+document.getElementById("btnUploadBrand").addEventListener("click", uploadBrand);
+document.getElementById("btnClearBrand").addEventListener("click", clearBrand);
+
+/* --- Select / Selected toggle --- */
+function setSelected(assetId, variantId) {
+  window.selectedAssetId = assetId;
+  window.selectedVariantId = variantId;
+  document.getElementById("selInfo").textContent = assetId.slice(0, 16) + "... / " + variantId.slice(0, 16) + "...";
+  document.getElementById("editPanel").classList.remove("hidden");
+
+  // Update all select buttons: reset others, mark selected
+  document.querySelectorAll("[data-select-btn]").forEach(function(btn) {
+    if (btn.dataset.assetId === assetId && btn.dataset.variantId === variantId) {
+      btn.textContent = "Selected";
+      btn.classList.add("btnSelected");
+    } else {
+      btn.textContent = "Select";
+      btn.classList.remove("btnSelected");
+    }
+  });
+}
+
+/* --- Image rendering --- */
+function renderImageCards(items) {
+  var html = "";
+  for (var i = 0; i < items.length; i++) {
+    var it = items[i];
+    var img = it.file_url || it.image_url || "";
+    if (!img) continue;
+    var mode = (it.req && it.req.mode) ? it.req.mode : (it.meta && it.meta.req && it.meta.req.mode) ? it.meta.req.mode : "";
+    
+    html += '<div class="imgCard">' +
+      '<img src="' + img + '" alt="Generated image" loading="lazy" />' +
+      '<div class="imgMeta">' +
+        '<div style="font-weight:600;color:var(--text-primary);">' + escapeHtml(mode || "image") + '</div>' +
+        '<div>' + escapeHtml((it.asset_id || "").slice(0, 10)) + '...</div>' +
+      '</div>' +
+      '<div class="imgActions">' +
+        '<button class="btnSm" type="button" data-select-btn data-asset-id="' + it.asset_id + '" data-variant-id="' + it.variant_id + '" onclick="setSelected(\'' + it.asset_id + '\',\'' + it.variant_id + '\')">Select</button>' +
+        '<a class="btn btnSm" href="' + img + '" download style="text-decoration:none;">Download</a>' +
+      '</div>' +
+    '</div>';
+  }
+  document.getElementById("imageOut").innerHTML = html || '<div class="emptyState"><div class="icon">&#128444;</div><div>No images yet. Generate your first image!</div></div>';
+}
+
+/* --- Inline loading for image generation --- */
+function showImageLoading(message) {
+  document.getElementById("imageOut").innerHTML =
+    '<div class="outCard loadingCard">' +
+      '<div class="spinner-lg" style="margin:0 auto;"></div>' +
+      '<div class="muted mt-3">' + escapeHtml(message) + '</div>' +
+    '</div>';
+}
+
+function buildImagePayload(mode) {
+  var offer = document.getElementById("offer").value.trim();
+  var aud = document.getElementById("audience").value.trim();
+  if (offer.length < 10) throw new Error("Fill product/service + benefit");
+  if (aud.length < 3) throw new Error("Fill target audience");
+
+  var langRaw = document.getElementById("language").value;
+  var lang = (langRaw === "bilingual") ? "en" : langRaw;
+
+  var logo_text = document.getElementById("brand_name").value.trim();
+  var include_logo = !!logo_text;
+
+  window.lastImageSettings = {
+    aspect_ratio: document.getElementById("aspect").value,
+    layout_id: document.getElementById("layout_id").value,
+    palette_hex: document.getElementById("palette_hex").value.trim(),
+    headline: document.getElementById("headline").value.trim(),
+    subheadline: document.getElementById("subheadline").value.trim(),
+    brand_name: document.getElementById("brand_name").value.trim()
+  };
+
+  return {
+    offer: offer,
+    audience: aud,
+    platform_style: document.getElementById("platform").value,
+    tone: document.getElementById("tone").value,
+    language: lang,
+    aspect_ratio: document.getElementById("aspect").value,
+    mode: mode,
+    headline: document.getElementById("headline").value.trim(),
+    subheadline: document.getElementById("subheadline").value.trim(),
+    palette_hex: document.getElementById("palette_hex").value.trim(),
+    layout_id: document.getElementById("layout_id").value || "L1",
+    include_logo: include_logo,
+    logo_text: logo_text,
+    brand_image_id: window.brandImageId
+  };
+}
+
+async function genImage(mode) {
+  try {
+    var payload = buildImagePayload(mode);
+    // Show inline loading below the buttons
+    showImageLoading(mode === "simple" ? "Generating image..." : "Creating creative image...");
+    setButtonsDisabled(true);
+
+    var res = await fetch("/image/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    var data = await res.json();
+    setButtonsDisabled(false);
+
+    if (data.error_status) {
+      setBad("Image generation failed");
+      document.getElementById("imageOut").innerHTML = '<div class="outCard"><div class="bad">Image generation failed. Please try again.</div></div>';
+      return;
+    }
+
+    setOk("Image ready!");
+    setSelected(data.asset_id, data.variant_id);
+    renderImageCards([data]);
+    await loadImageHistory();
+    showToast("Image generated successfully");
+  } catch (e) {
+    setButtonsDisabled(false);
+    setBad(e.message || "Image error");
+    document.getElementById("imageOut").innerHTML = '<div class="outCard"><div class="bad">' + escapeHtml(e.message || "Image error") + '</div></div>';
+  }
+}
+
+async function applyEdit() {
+  try {
+    if (!window.selectedAssetId || !window.selectedVariantId) {
+      setBad("Select an image first");
+      return;
+    }
+
+    var logo_text = document.getElementById("edit_logo_text").value.trim();
+    var include_logo = logo_text ? true : null;
+
+    var payload = {
+      asset_id: window.selectedAssetId,
+      variant_id: window.selectedVariantId,
+      mode: document.getElementById("edit_mode").value || "",
+      tone: document.getElementById("edit_tone").value || "",
+      language: document.getElementById("edit_language").value || "",
+      aspect_ratio: document.getElementById("edit_aspect").value || "",
+      layout_id: document.getElementById("edit_layout").value || "",
+      palette_hex: document.getElementById("edit_palette_hex").value.trim(),
+      headline: document.getElementById("edit_headline").value.trim(),
+      subheadline: document.getElementById("edit_subheadline").value.trim(),
+      logo_text: logo_text
+    };
+    if (include_logo !== null) payload.include_logo = include_logo;
+
+    showImageLoading("Applying edits...");
+    setButtonsDisabled(true);
+
+    var res = await fetch("/image/edit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    var data = await res.json();
+    setButtonsDisabled(false);
+
+    if (data.error_status) {
+      setBad("Edit failed");
+      document.getElementById("imageOut").innerHTML = '<div class="outCard"><div class="bad">Edit failed. Please try again.</div></div>';
+      return;
+    }
+
+    setOk("Edit complete!");
+    setSelected(data.asset_id, data.variant_id);
+    renderImageCards([data]);
+    await loadImageHistory();
+    showToast("Image edited successfully");
+  } catch (e) {
+    setButtonsDisabled(false);
+    setBad("Edit error");
+  }
+}
+
+/* --- History with carousel --- */
+var imgHistoryItems = [];
+var imgHistoryIndex = 0;
+
+function renderImgHistoryCarousel() {
+  var box = document.getElementById("historyBox");
+  if (imgHistoryItems.length === 0) {
+    box.innerHTML = '<div class="muted">No history yet</div>';
+    return;
+  }
+
+  var item = imgHistoryItems[imgHistoryIndex];
+  var aid = item.asset_id;
+  var latestArr = item.latest || [];
+  var latest = latestArr[0];
+  if (!aid || !latest) { box.innerHTML = '<div class="muted">No history yet</div>'; return; }
+
+  var vid = latest.variant_id;
+  var file = latest.file_url || "/files/" + aid + "/" + vid + ".png";
+  var isCurrentlySelected = (window.selectedAssetId === aid && window.selectedVariantId === vid);
+
+  var html = '<div class="carouselHeader">' +
+    '<button class="btnIcon btnGhost btnSm" type="button" id="imgPrev"' + (imgHistoryIndex <= 0 ? ' disabled' : '') + ' style="font-size:16px;">&#9664;</button>' +
+    '<span class="carouselCounter">' + (imgHistoryIndex + 1) + ' / ' + imgHistoryItems.length + '</span>' +
+    '<button class="btnIcon btnGhost btnSm" type="button" id="imgNext"' + (imgHistoryIndex >= imgHistoryItems.length - 1 ? ' disabled' : '') + ' style="font-size:16px;">&#9654;</button>' +
+    '<button class="btnGhost btnSm" type="button" id="imgShowAll">Show all</button>' +
+  '</div>' +
+  '<div class="carouselSlide">' +
+    '<div style="margin-bottom:12px;padding:12px;background:var(--bg-secondary);border-radius:var(--radius-md);">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+        '<div>' +
+          '<div style="font-weight:600;font-size:13px;">' + aid.slice(0, 12) + '...</div>' +
+          '<div class="muted text-xs">' + vid.slice(0, 12) + '...</div>' +
+        '</div>' +
+        '<div class="flex gap-2">' +
+          '<button class="btnSm' + (isCurrentlySelected ? ' btnSelected' : '') + '" type="button" data-select-btn data-asset-id="' + aid + '" data-variant-id="' + vid + '" onclick="setSelected(\'' + aid + '\',\'' + vid + '\')">' + (isCurrentlySelected ? 'Selected' : 'Select') + '</button>' +
+          '<button class="btnGhost btnSm" type="button" onclick="showImageAsset(\'' + aid + '\')">Versions</button>' +
+        '</div>' +
+      '</div>' +
+      '<img src="' + file + '" style="width:100%;border-radius:var(--radius-sm);aspect-ratio:1;object-fit:cover;" />' +
+    '</div>' +
+  '</div>';
+
+  box.innerHTML = html;
+
+  // Wire arrow buttons
+  document.getElementById("imgPrev").addEventListener("click", function() {
+    if (imgHistoryIndex > 0) { imgHistoryIndex--; renderImgHistoryCarousel(); }
+  });
+  document.getElementById("imgNext").addEventListener("click", function() {
+    if (imgHistoryIndex < imgHistoryItems.length - 1) { imgHistoryIndex++; renderImgHistoryCarousel(); }
+  });
+  document.getElementById("imgShowAll").addEventListener("click", openImgHistoryModal);
+}
+
+async function loadImageHistory() {
+  try {
+    startProgress("Loading history...");
+    var res = await fetch("/image/history?limit=10");
+    var data = await res.json();
+    imgHistoryItems = data.items || [];
+    imgHistoryIndex = 0;
+    renderImgHistoryCarousel();
+    endProgress(true, "History loaded");
+  } catch (e) {
+    endProgress(false, "History error");
+  }
+}
+
+async function showImageAsset(assetId) {
+  try {
+    startProgress("Loading versions...");
+    var res = await fetch("/image/history/" + assetId);
+    var meta = await res.json();
+    var variants = meta.variants || [];
+
+    var cards = variants.map(function(v) {
+      return {
+        asset_id: assetId,
+        variant_id: v.variant_id,
+        file_url: v.file_url || "/files/" + assetId + "/" + v.variant_id + ".png",
+        meta: v
+      };
+    }).reverse();
+
+    renderImageCards(cards);
+    if (cards[0]) setSelected(cards[0].asset_id, cards[0].variant_id);
+    endProgress(true, "Versions loaded");
+  } catch (e) {
+    endProgress(false, "Versions error");
+  }
+}
+
+/* --- History Modal --- */
+function openImgHistoryModal() {
+  var modal = document.getElementById("imgHistoryModal");
+  var grid = document.getElementById("imgModalGrid");
+
+  var html = '<div class="historyGrid">';
+  for (var i = 0; i < imgHistoryItems.length; i++) {
+    var it = imgHistoryItems[i];
+    var aid = it.asset_id;
+    var latestArr = it.latest || [];
+    var latest = latestArr[0];
+    if (!aid || !latest) continue;
+
+    var vid = latest.variant_id;
+    var file = latest.file_url || "/files/" + aid + "/" + vid + ".png";
+    var isCurrentlySelected = (window.selectedAssetId === aid && window.selectedVariantId === vid);
+
+    html += '<div class="historyItem" style="cursor:pointer;">' +
+      '<img src="' + file + '" style="width:100%;aspect-ratio:1;object-fit:cover;" />' +
+      '<div class="info">' +
+        '<div style="font-weight:600;">' + aid.slice(0, 10) + '...</div>' +
+        '<div class="flex gap-2 mt-2">' +
+          '<button class="btnSm' + (isCurrentlySelected ? ' btnSelected' : '') + '" type="button" data-select-btn data-asset-id="' + aid + '" data-variant-id="' + vid + '" onclick="modalSelectImage(\'' + aid + '\',\'' + vid + '\')">'+  (isCurrentlySelected ? 'Selected' : 'Select') + '</button>' +
+          '<button class="btnGhost btnSm" type="button" onclick="modalShowVersions(\'' + aid + '\')">Versions</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  html += '</div>';
+
+  grid.innerHTML = html;
+  modal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeImgHistoryModal() {
+  document.getElementById("imgHistoryModal").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
+function modalSelectImage(aid, vid) {
+  setSelected(aid, vid);
+  closeImgHistoryModal();
+}
+
+function modalShowVersions(aid) {
+  closeImgHistoryModal();
+  showImageAsset(aid);
+}
+
+document.getElementById("imgModalClose").addEventListener("click", closeImgHistoryModal);
+document.getElementById("imgHistoryModal").addEventListener("click", function(e) {
+  if (e.target === this) closeImgHistoryModal();
+});
+
+/* --- Event Listeners --- */
+document.getElementById("btnGenImgSimple").addEventListener("click", function() { genImage("simple"); });
+document.getElementById("btnGenImgCreative").addEventListener("click", function() { genImage("creative"); });
+document.getElementById("btnImgHistory").addEventListener("click", loadImageHistory);
+document.getElementById("btnApplyEdit").addEventListener("click", applyEdit);
+
+document.getElementById("btnReset").addEventListener("click", function() {
+  document.getElementById("offer").value = "";
+  document.getElementById("audience").value = "";
+  document.getElementById("platform").value = "IG";
+  document.getElementById("tone").value = "friendly";
+  document.getElementById("language").value = "id";
+  document.getElementById("price_promo").value = "";
+  document.getElementById("cta_preference").value = "";
+  setOk("Form reset");
+});
+
+document.getElementById("btnClearOutputs").addEventListener("click", function() {
+  document.getElementById("imageOut").innerHTML = "";
+  setOk("Outputs cleared");
+});
+
+// Restore brand hint if already uploaded
+if (window.brandImageId) {
+  document.getElementById("brandHint").textContent = "Uploaded: " + window.brandImageId.slice(0, 12) + "...";
+}
+</script>

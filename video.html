@@ -1,0 +1,566 @@
+<!-- video.html — Video tab fragment -->
+
+<!-- Core Inputs Card -->
+<div class="card">
+  <div class="grid2">
+    <div>
+      <label for="offer">What are you promoting?</label>
+      <textarea id="offer" placeholder="Example: SwiftNote AI — turns meeting audio into clean notes + action items in minutes. Works for busy teams that hate writing minutes."></textarea>
+    </div>
+    <div>
+      <label for="audience">Who is this for?</label>
+      <input id="audience" placeholder="Example: students, small business owners, HR teams" />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <div class="cap">Platform</div>
+      <select id="platform">
+        <option value="IG">Instagram</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="TikTok">TikTok</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <div class="cap">Tone</div>
+      <select id="tone">
+        <option value="friendly">Friendly</option>
+        <option value="formal">Formal</option>
+        <option value="bold">Bold</option>
+        <option value="funny">Funny</option>
+        <option value="luxury">Luxury</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <div class="cap">Language</div>
+      <select id="language">
+        <option value="id">Indonesian</option>
+        <option value="en">English</option>
+        <option value="bilingual">Bilingual</option>
+      </select>
+    </div>
+  </div>
+
+  <details>
+    <summary>Advanced options</summary>
+    <div class="miniRow" style="display:flex;flex-wrap:wrap;gap:12px;">
+      <div class="field" style="min-width:200px;flex:1;">
+        <div class="cap">Price / promo</div>
+        <input id="price_promo" placeholder="Example: Rp99k/week, or 50% off today" />
+      </div>
+      <div class="field" style="min-width:140px;">
+        <div class="cap">CTA preference</div>
+        <select id="cta_preference">
+          <option value="">Auto</option>
+          <option value="DM">DM</option>
+          <option value="link">Link</option>
+          <option value="comment">Comment</option>
+        </select>
+      </div>
+    </div>
+  </details>
+
+  <div class="row" style="justify-content:space-between;">
+    <div id="status" class="status"></div>
+    <div class="flex gap-2">
+      <button class="btnGhost btnSm" type="button" id="btnReset">Reset all</button>
+      <button class="btnGhost btnSm" type="button" id="btnClearOutputs">Clear outputs</button>
+    </div>
+  </div>
+</div>
+
+<!-- Video Controls -->
+<div class="split">
+  <div>
+    <div class="card">
+      <div class="title" style="font-weight:700;margin-bottom:4px;">Video settings</div>
+      <div class="muted mb-4">Create short-form video ads</div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:16px;">
+        <div class="field" style="min-width:140px;flex:1;">
+          <div class="cap">Duration</div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <input type="range" id="vid_duration_slider" min="2" max="10" value="5" style="flex:1;" />
+            <span id="vid_duration_val" style="min-width:40px;text-align:center;font-weight:600;">5s</span>
+          </div>
+        </div>
+
+        <div class="field" style="min-width:140px;flex:1;">
+          <div class="cap">Format</div>
+          <select id="vid_format">
+            <option value="shorts">Shorts (9:16)</option>
+            <option value="landscape">Landscape (16:9)</option>
+          </select>
+        </div>
+
+        <div class="field" style="min-width:140px;flex:1;">
+          <div class="cap">Resolution</div>
+          <select id="vid_resolution">
+            <option value="720p">720p</option>
+            <option value="1080p">1080p</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;">
+        <div class="field" style="min-width:140px;flex:1;">
+          <div class="cap">Mode</div>
+          <select id="vid_mode">
+            <option value="simple">Simple</option>
+            <option value="creative">Creative</option>
+          </select>
+        </div>
+
+        <div class="field" style="min-width:140px;flex:1;">
+          <div class="cap">Shot type</div>
+          <select id="vid_shot">
+            <option value="multi">Multi-shot</option>
+            <option value="single">Single shot</option>
+          </select>
+        </div>
+
+        <div class="field" style="min-width:140px;flex:1;">
+          <div class="cap">Audio</div>
+          <select id="vid_audio">
+            <option value="true">On</option>
+            <option value="false">Off</option>
+          </select>
+        </div>
+      </div>
+
+      <details class="mt-4">
+        <summary>Reference URLs (optional)</summary>
+        <div class="refList" id="refList">
+          <div class="refItem">
+            <input type="text" placeholder="https://.../reference.jpg" class="refUrlInput" />
+            <button class="btnGhost btnSm btnRemoveRef" type="button">Remove</button>
+          </div>
+        </div>
+        <button class="btnGhost btnSm mt-2" type="button" id="btnAddRef">+ Add reference</button>
+        
+        <div style="margin-top:16px;">
+          <div class="cap">Logo text</div>
+          <input id="vid_logo" placeholder="Optional. e.g. SwiftNote" />
+        </div>
+        
+        <div style="margin-top:12px;">
+          <div class="cap">Palette hex</div>
+          <input id="vid_palette" placeholder="Optional. #111111,#FFFFFF,#6366f1" />
+        </div>
+      </details>
+
+      <div class="row mt-4">
+        <button class="btnPrimary" type="button" id="btnGenVideo">Generate video</button>
+        <button class="btnGhost" type="button" id="btnVideoHistory">Refresh history</button>
+      </div>
+
+      <div class="hr"></div>
+
+      <!-- Video output with inline loading -->
+      <div id="videoOut"></div>
+    </div>
+  </div>
+
+  <div class="sideCard hidden" id="videoHistoryPanel">
+    <div class="title" style="font-size:16px;">Video history</div>
+    <div class="muted text-sm mt-2">Completed videos</div>
+    <div class="hr"></div>
+    <div id="videoHistoryBox" class="muted text-sm">No videos yet</div>
+  </div>
+</div>
+
+<!-- Video History Modal -->
+<div class="modalOverlay hidden" id="vidHistoryModal">
+  <div class="modalContent">
+    <div class="modalHeader">
+      <span>All Video History</span>
+      <button class="btnIcon btnGhost" type="button" id="vidModalClose" style="font-size:18px;">&#10005;</button>
+    </div>
+    <div class="modalBody" id="vidModalGrid"></div>
+  </div>
+</div>
+
+<script>
+/* =========================
+   Video Tab Logic
+========================= */
+
+/* --- Duration slider --- */
+document.getElementById("vid_duration_slider").addEventListener("input", function(e) {
+  document.getElementById("vid_duration_val").textContent = e.target.value + "s";
+});
+
+/* --- Reference URL management --- */
+document.getElementById("btnAddRef").addEventListener("click", function() {
+  var refList = document.getElementById("refList");
+  var div = document.createElement("div");
+  div.className = "refItem";
+  div.innerHTML = '<input type="text" placeholder="https://.../reference.jpg" class="refUrlInput" />' +
+    '<button class="btnGhost btnSm btnRemoveRef" type="button">Remove</button>';
+  refList.appendChild(div);
+  
+  div.querySelector(".btnRemoveRef").addEventListener("click", function() {
+    div.remove();
+  });
+});
+
+document.querySelector(".btnRemoveRef").addEventListener("click", function() {
+  if (document.querySelectorAll(".refItem").length > 1) {
+    this.closest(".refItem").remove();
+  }
+});
+
+/* --- Inline loading for video --- */
+function showVideoLoading(message) {
+  document.getElementById("videoOut").innerHTML =
+    '<div class="outCard loadingCard">' +
+      '<div class="spinner-lg" style="margin:0 auto;"></div>' +
+      '<div class="muted mt-3">' + escapeHtml(message) + '</div>' +
+    '</div>';
+}
+
+function updateVideoLoadingText(message) {
+  var loadingText = document.querySelector("#videoOut .loadingCard .muted");
+  if (loadingText) loadingText.textContent = message;
+}
+
+/* --- Video payload --- */
+function buildVideoPayload() {
+  var offer = document.getElementById("offer").value.trim();
+  var aud = document.getElementById("audience").value.trim();
+  if (offer.length < 10) throw new Error("Fill product/service + benefit");
+  if (aud.length < 3) throw new Error("Fill target audience");
+
+  var langRaw = document.getElementById("language").value;
+  var lang = (langRaw === "bilingual") ? "en" : langRaw;
+
+  var refs = [];
+  document.querySelectorAll(".refUrlInput").forEach(function(input) {
+    var val = input.value.trim();
+    if (val) refs.push(val);
+  });
+
+  return {
+    offer: offer,
+    audience: aud,
+    platform_style: document.getElementById("platform").value,
+    tone: document.getElementById("tone").value,
+    language: lang,
+    format: document.getElementById("vid_format").value,
+    resolution: document.getElementById("vid_resolution").value,
+    duration_s: parseInt(document.getElementById("vid_duration_slider").value, 10),
+    mode: document.getElementById("vid_mode").value,
+    shot_type: document.getElementById("vid_shot").value,
+    audio: document.getElementById("vid_audio").value === "true",
+    reference_urls: refs,
+    palette_hex: document.getElementById("vid_palette").value.trim(),
+    logo_text: document.getElementById("vid_logo").value.trim()
+  };
+}
+
+/* --- Video result rendering --- */
+function renderVideoResultBlock(obj) {
+  var box = document.getElementById("videoOut");
+
+  if (obj && obj.error_status) {
+    box.innerHTML =
+      '<div class="outCard">' +
+        '<div class="bad">Video generation failed. Please try again.</div>' +
+      '</div>';
+    return;
+  }
+
+  var file = obj && obj.file_url ? obj.file_url : "";
+  var remote = (obj && obj.remote_urls && obj.remote_urls[0]) ? obj.remote_urls[0] : "";
+
+  if (obj && obj.status === "SUCCEEDED" && file) {
+    box.innerHTML =
+      '<div class="outCard">' +
+        '<div class="title">' +
+          '<span>Your video is ready!</span>' +
+          '<a class="btn btnSm" href="' + file + '" download>Download MP4</a>' +
+        '</div>' +
+        '<video controls src="' + file + '" poster="' + (remote || '') + '"></video>' +
+      '</div>';
+    showToast("Video ready! Downloading...");
+    setTimeout(function() {
+      var a = document.createElement("a");
+      a.href = file;
+      a.download = "";
+      a.click();
+    }, 1000);
+    return;
+  }
+
+  var st = obj && obj.status ? obj.status : "Processing...";
+  box.innerHTML =
+    '<div class="outCard loadingCard">' +
+      '<div class="spinner-lg" style="margin:0 auto;"></div>' +
+      '<div class="muted mt-3">' + escapeHtml(st) + ' — This may take 1-3 minutes</div>' +
+    '</div>';
+}
+
+/* --- Generate & Poll --- */
+async function genVideo() {
+  try {
+    var payload = buildVideoPayload();
+
+    // Show inline loading below
+    showVideoLoading("Creating video task...");
+    setButtonsDisabled(true);
+
+    var res = await fetch("/video/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    var data = await res.json();
+    if (data.error_status) {
+      setButtonsDisabled(false);
+      setBad("Video task failed");
+      renderVideoResultBlock(data);
+      return;
+    }
+
+    window.currentVideoTask = {
+      task_id: data.task_id,
+      asset_id: data.asset_id,
+      variant_id: data.variant_id,
+      poll_url: data.poll_url
+    };
+
+    setOk("Video processing started...");
+    setButtonsDisabled(false);
+    await pollVideoUntilDone(window.currentVideoTask);
+    await loadVideoHistory();
+  } catch (e) {
+    setButtonsDisabled(false);
+    setBad(e.message || "Video error");
+    document.getElementById("videoOut").innerHTML = '<div class="outCard"><div class="bad">' + escapeHtml(e.message || "Video error") + '</div></div>';
+  }
+}
+
+async function pollVideoUntilDone(task) {
+  var maxTries = 60;
+  for (var i = 0; i < maxTries; i++) {
+    try {
+      updateVideoLoadingText("Rendering video... " + (i+1) + "/" + maxTries + " — This may take 1-3 minutes");
+      var url = "/video/status/" + encodeURIComponent(task.task_id) + "?asset_id=" + encodeURIComponent(task.asset_id) + "&variant_id=" + encodeURIComponent(task.variant_id);
+      var res = await fetch(url);
+      var data = await res.json();
+
+      if (data.error_status) {
+        setBad("Video failed");
+        renderVideoResultBlock(data);
+        return;
+      }
+
+      if (data.status === "SUCCEEDED" && data.file_url) {
+        setOk("Video complete!");
+        renderVideoResultBlock(data);
+        return;
+      }
+
+      await new Promise(function(r) { setTimeout(r, 2000); });
+    } catch (e) {
+      await new Promise(function(r) { setTimeout(r, 2000); });
+    }
+  }
+
+  setBad("Video timeout");
+  renderVideoResultBlock({ error_status: "TIMEOUT", error_body: "Polling timeout" });
+}
+
+/* --- Video history with carousel --- */
+var vidHistoryItems = [];
+var vidHistoryIndex = 0;
+
+function renderVidHistoryCarousel() {
+  var box = document.getElementById("videoHistoryBox");
+  var panel = document.getElementById("videoHistoryPanel");
+  
+  if (vidHistoryItems.length === 0) {
+    box.innerHTML = '<div class="muted">No videos yet</div>';
+    panel.classList.add("hidden");
+    return;
+  }
+
+  // Show panel when there's history
+  panel.classList.remove("hidden");
+
+  var item = vidHistoryItems[vidHistoryIndex];
+  var aid = item.asset_id;
+  var latestArr = item.latest || [];
+  var latest = latestArr[0];
+  if (!aid || !latest) { box.innerHTML = '<div class="muted">No videos yet</div>'; return; }
+
+  var vid = latest.variant_id;
+  var file = latest.file_url || "/files/" + aid + "/" + vid + ".mp4";
+  var created = new Date(latest.created_at || Date.now()).toLocaleDateString();
+
+  var html = '<div class="carouselHeader">' +
+    '<button class="btnIcon btnGhost btnSm" type="button" id="vidPrev"' + (vidHistoryIndex <= 0 ? ' disabled' : '') + ' style="font-size:16px;">&#9664;</button>' +
+    '<span class="carouselCounter">' + (vidHistoryIndex + 1) + ' / ' + vidHistoryItems.length + '</span>' +
+    '<button class="btnIcon btnGhost btnSm" type="button" id="vidNext"' + (vidHistoryIndex >= vidHistoryItems.length - 1 ? ' disabled' : '') + ' style="font-size:16px;">&#9654;</button>' +
+    '<button class="btnGhost btnSm" type="button" id="vidShowAll">Show all</button>' +
+  '</div>' +
+  '<div class="carouselSlide">' +
+    '<div style="padding:12px;background:var(--bg-secondary);border-radius:var(--radius-md);">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+        '<div>' +
+          '<div style="font-weight:600;font-size:13px;">' + aid.slice(0, 12) + '...</div>' +
+          '<div class="muted text-xs">' + created + '</div>' +
+        '</div>' +
+        '<div class="flex gap-2">' +
+          '<button class="btnSm" type="button" onclick="playVideoFromHistory(\'' + aid + '\',\'' + vid + '\')">Play</button>' +
+          '<button class="btnGhost btnSm" type="button" onclick="showVideoAsset(\'' + aid + '\')">Versions</button>' +
+        '</div>' +
+      '</div>' +
+      '<video src="' + file + '" muted preload="metadata" style="width:100%;border-radius:var(--radius-sm);"></video>' +
+    '</div>' +
+  '</div>';
+
+  box.innerHTML = html;
+
+  document.getElementById("vidPrev").addEventListener("click", function() {
+    if (vidHistoryIndex > 0) { vidHistoryIndex--; renderVidHistoryCarousel(); }
+  });
+  document.getElementById("vidNext").addEventListener("click", function() {
+    if (vidHistoryIndex < vidHistoryItems.length - 1) { vidHistoryIndex++; renderVidHistoryCarousel(); }
+  });
+  document.getElementById("vidShowAll").addEventListener("click", openVidHistoryModal);
+}
+
+function playVideoFromHistory(aid, vid) {
+  var file = "/files/" + aid + "/" + vid + ".mp4";
+  document.getElementById("videoOut").innerHTML =
+    '<div class="outCard">' +
+      '<div class="title">' +
+        '<span>Video playback</span>' +
+        '<a class="btn btnSm" href="' + file + '" download>Download MP4</a>' +
+      '</div>' +
+      '<video controls src="' + file + '" autoplay></video>' +
+    '</div>';
+}
+
+async function loadVideoHistory() {
+  try {
+    startProgress("Loading video history...");
+    var res = await fetch("/video/history?limit=10");
+    var data = await res.json();
+    vidHistoryItems = data.items || [];
+    vidHistoryIndex = 0;
+    renderVidHistoryCarousel();
+    endProgress(true, "Video history loaded");
+  } catch (e) {
+    endProgress(false, "Video history error");
+  }
+}
+
+async function showVideoAsset(assetId) {
+  try {
+    startProgress("Loading video versions...");
+    var res = await fetch("/video/history/" + assetId);
+    var meta = await res.json();
+    var variants = meta.variants || [];
+
+    var html = '';
+    for (var i = 0; i < variants.length; i++) {
+      var v = variants[i];
+      var file = v.file_url || "/files/" + assetId + "/" + v.variant_id + ".mp4";
+      html +=
+        '<div class="outCard">' +
+          '<div class="title">' + escapeHtml(v.variant_id).slice(0, 16) + '...</div>' +
+          '<video controls src="' + file + '"></video>' +
+          '<div class="mt-3">' +
+            '<a class="btn btnSm" href="' + file + '" download>Download</a>' +
+          '</div>' +
+        '</div>';
+    }
+
+    document.getElementById("videoOut").innerHTML = html || '<div class="muted">No versions found</div>';
+    endProgress(true, "Video versions loaded");
+  } catch (e) {
+    endProgress(false, "Video versions error");
+  }
+}
+
+/* --- Video History Modal --- */
+function openVidHistoryModal() {
+  var modal = document.getElementById("vidHistoryModal");
+  var grid = document.getElementById("vidModalGrid");
+
+  var html = '<div class="historyGrid">';
+  for (var i = 0; i < vidHistoryItems.length; i++) {
+    var it = vidHistoryItems[i];
+    var aid = it.asset_id;
+    var latestArr = it.latest || [];
+    var latest = latestArr[0];
+    if (!aid || !latest) continue;
+
+    var vid = latest.variant_id;
+    var file = latest.file_url || "/files/" + aid + "/" + vid + ".mp4";
+    var created = new Date(latest.created_at || Date.now()).toLocaleDateString();
+
+    html += '<div class="historyItem" style="cursor:pointer;">' +
+      '<video src="' + file + '" muted preload="metadata"></video>' +
+      '<div class="info">' +
+        '<div style="font-weight:600;">' + aid.slice(0, 10) + '...</div>' +
+        '<div>' + created + '</div>' +
+        '<div class="flex gap-2 mt-2">' +
+          '<button class="btnSm" type="button" onclick="modalPlayVideo(\'' + aid + '\',\'' + vid + '\')">Play</button>' +
+          '<button class="btnGhost btnSm" type="button" onclick="modalShowVideoVersions(\'' + aid + '\')">Versions</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  html += '</div>';
+
+  grid.innerHTML = html;
+  modal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeVidHistoryModal() {
+  document.getElementById("vidHistoryModal").classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
+function modalPlayVideo(aid, vid) {
+  closeVidHistoryModal();
+  playVideoFromHistory(aid, vid);
+}
+
+function modalShowVideoVersions(aid) {
+  closeVidHistoryModal();
+  showVideoAsset(aid);
+}
+
+document.getElementById("vidModalClose").addEventListener("click", closeVidHistoryModal);
+document.getElementById("vidHistoryModal").addEventListener("click", function(e) {
+  if (e.target === this) closeVidHistoryModal();
+});
+
+/* --- Event Listeners --- */
+document.getElementById("btnGenVideo").addEventListener("click", genVideo);
+document.getElementById("btnVideoHistory").addEventListener("click", loadVideoHistory);
+
+document.getElementById("btnReset").addEventListener("click", function() {
+  document.getElementById("offer").value = "";
+  document.getElementById("audience").value = "";
+  document.getElementById("platform").value = "IG";
+  document.getElementById("tone").value = "friendly";
+  document.getElementById("language").value = "id";
+  document.getElementById("price_promo").value = "";
+  document.getElementById("cta_preference").value = "";
+  setOk("Form reset");
+});
+
+document.getElementById("btnClearOutputs").addEventListener("click", function() {
+  document.getElementById("videoOut").innerHTML = "";
+  setOk("Outputs cleared");
+});
+</script>

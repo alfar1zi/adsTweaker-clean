@@ -1,0 +1,249 @@
+<!-- caption.html — Caption tab fragment -->
+
+<!-- Core Inputs Card -->
+<div class="card">
+  <div class="grid2">
+    <div>
+      <label for="offer">What are you promoting?</label>
+      <textarea id="offer" placeholder="Example: SwiftNote AI — turns meeting audio into clean notes + action items in minutes. Works for busy teams that hate writing minutes."></textarea>
+    </div>
+    <div>
+      <label for="audience">Who is this for?</label>
+      <input id="audience" placeholder="Example: students, small business owners, HR teams" />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <div class="cap">Platform</div>
+      <select id="platform">
+        <option value="IG">Instagram</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="TikTok">TikTok</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <div class="cap">Tone</div>
+      <select id="tone">
+        <option value="friendly">Friendly</option>
+        <option value="formal">Formal</option>
+        <option value="bold">Bold</option>
+        <option value="funny">Funny</option>
+        <option value="luxury">Luxury</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <div class="cap">Language</div>
+      <select id="language">
+        <option value="id">Indonesian</option>
+        <option value="en">English</option>
+        <option value="bilingual">Bilingual</option>
+      </select>
+    </div>
+  </div>
+
+  <details>
+    <summary>Advanced options</summary>
+    <div class="miniRow" style="display:flex;flex-wrap:wrap;gap:12px;">
+      <div class="field" style="min-width:200px;flex:1;">
+        <div class="cap">Price / promo</div>
+        <input id="price_promo" placeholder="Example: Rp99k/week, or 50% off today" />
+      </div>
+      <div class="field" style="min-width:140px;">
+        <div class="cap">CTA preference</div>
+        <select id="cta_preference">
+          <option value="">Auto</option>
+          <option value="DM">DM</option>
+          <option value="link">Link</option>
+          <option value="comment">Comment</option>
+        </select>
+      </div>
+    </div>
+  </details>
+
+  <div class="row" style="justify-content:space-between;">
+    <div id="status" class="status"></div>
+    <div class="flex gap-2">
+      <button class="btnGhost btnSm" type="button" id="btnReset">Reset all</button>
+      <button class="btnGhost btnSm" type="button" id="btnClearOutputs">Clear outputs</button>
+    </div>
+  </div>
+</div>
+
+<!-- Caption Controls -->
+<div class="row">
+  <button class="btnPrimary" type="button" id="btnGenCaption">
+    <span>Generate caption pack</span>
+  </button>
+  <button class="btnSecondary" type="button" id="btnRegenCaption" style="display:none;">
+    <span>Regenerate</span>
+  </button>
+</div>
+<div id="captionOut" class="outGrid"></div>
+
+<script>
+/* =========================
+   Caption Tab Logic
+========================= */
+
+function renderCaptionOutput(data) {
+  let out = data;
+  if (out.id && out.en) out = out.id;
+  
+  window.lastCaptionData = out;
+  document.getElementById("btnRegenCaption").style.display = "inline-flex";
+  
+  const openingOptions = out.opening_options || {};
+  const openingPills = Object.entries(openingOptions).map(([k, v]) => 
+    `<span class="pill" data-text="${escapeHtml(v)}" onclick="copyFromPill(this)">${k}</span>`
+  ).join("");
+  
+  const ctaOptions = out.cta_options || {};
+  const ctaPills = Object.entries(ctaOptions).map(([k, v]) => 
+    `<span class="pill" data-text="${escapeHtml(v)}" onclick="copyFromPill(this)">${k}</span>`
+  ).join("");
+  
+  const hashtags = (out.hashtags || []).map(h => `<span class="hashtag">#${h}</span>`).join(" ");
+  const replyPack = (out.reply_pack || []).map(r => `<li class="replyItem">${escapeHtml(r)}</li>`).join("");
+  
+  const fullPack = `
+${out.opening_best || ''}
+
+${out.main_caption || ''}
+
+${hashtags}
+
+Reply pack:
+${(out.reply_pack || []).join('\n')}
+  `.trim();
+  
+  return `
+    <div class="outCard">
+      <div class="title">
+        <span>Opening hooks</span>
+        <button class="copyBtn" onclick="copyToClipboard('${escapeHtml(out.opening_best || '')}', this)">Copy best</button>
+      </div>
+      <div class="captionBlock">
+        <div class="label">Best opening</div>
+        <div class="content">${escapeHtml(out.opening_best || '')}</div>
+      </div>
+      <div class="pillRow">${openingPills}</div>
+    </div>
+    
+    <div class="outCard">
+      <div class="title">
+        <span>Captions</span>
+      </div>
+      <div class="captionBlock">
+        <div class="label">Main caption</div>
+        <div class="content">${escapeHtml(out.main_caption || '')}</div>
+        <button class="copyBtn mt-2" onclick="copyToClipboard('${escapeHtml(out.main_caption || '')}', this)">Copy</button>
+      </div>
+      <div class="captionBlock">
+        <div class="label">Short caption</div>
+        <div class="content small">${escapeHtml(out.short_caption || '')}</div>
+        <button class="copyBtn mt-2" onclick="copyToClipboard('${escapeHtml(out.short_caption || '')}', this)">Copy</button>
+      </div>
+    </div>
+    
+    <div class="outCard">
+      <div class="title">
+        <span>Call-to-action options</span>
+      </div>
+      <div class="pillRow">${ctaPills}</div>
+    </div>
+    
+    <div class="outCard">
+      <div class="title">
+        <span>Hashtags</span>
+        <button class="copyBtn" onclick="copyToClipboard('${escapeHtml((out.hashtags || []).join(' '))}', this)">Copy all</button>
+      </div>
+      <div class="hashtagRow">${hashtags}</div>
+    </div>
+    
+    <div class="outCard">
+      <div class="title">
+        <span>Reply pack</span>
+        <button class="copyBtn" onclick="copyToClipboard('${escapeHtml((out.reply_pack || []).join('\\n'))}', this)">Copy all</button>
+      </div>
+      <ul class="replyList">${replyPack}</ul>
+    </div>
+    
+    <div class="outCard">
+      <div class="title">
+        <span>Full pack</span>
+        <button class="copyBtn" onclick="copyToClipboard(\`${escapeHtml(fullPack)}\`, this)">Copy everything</button>
+      </div>
+      <div class="muted text-sm">Click the button to copy the complete pack</div>
+    </div>
+  `;
+}
+
+function copyFromPill(el) {
+  copyToClipboard(el.dataset.text, el);
+}
+
+async function genCaption() {
+  try {
+    const offer = document.getElementById("offer").value.trim();
+    const aud = document.getElementById("audience").value.trim();
+    if (offer.length < 10) { setBad("Please describe what you're promoting"); return; }
+    if (aud.length < 3) { setBad("Please specify your target audience"); return; }
+
+    const payload = {
+      offer,
+      audience: aud,
+      tone: document.getElementById("tone").value,
+      platform: document.getElementById("platform").value,
+      language: document.getElementById("language").value,
+      price_promo: document.getElementById("price_promo").value.trim(),
+      cta_preference: document.getElementById("cta_preference").value
+    };
+
+    startProgress("Creating your caption pack...");
+    const res = await fetch("/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (data.error_status) {
+      endProgress(false, "Caption generation failed");
+      document.getElementById("captionOut").innerHTML = `
+        <div class="outCard">
+          <div class="bad">Something went wrong. Please try again.</div>
+        </div>
+      `;
+      return;
+    }
+
+    endProgress(true, data.cached ? "Caption loaded from cache" : "Caption pack ready!");
+    document.getElementById("captionOut").innerHTML = renderCaptionOutput(data);
+  } catch (e) {
+    endProgress(false, "Caption error");
+  }
+}
+
+/* Event Listeners */
+document.getElementById("btnGenCaption").addEventListener("click", genCaption);
+document.getElementById("btnRegenCaption").addEventListener("click", genCaption);
+
+document.getElementById("btnReset").addEventListener("click", () => {
+  document.getElementById("offer").value = "";
+  document.getElementById("audience").value = "";
+  document.getElementById("platform").value = "IG";
+  document.getElementById("tone").value = "friendly";
+  document.getElementById("language").value = "id";
+  document.getElementById("price_promo").value = "";
+  document.getElementById("cta_preference").value = "";
+  setOk("Form reset");
+});
+
+document.getElementById("btnClearOutputs").addEventListener("click", () => {
+  document.getElementById("captionOut").innerHTML = "";
+  setOk("Outputs cleared");
+});
+</script>
