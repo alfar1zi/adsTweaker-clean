@@ -811,3 +811,16 @@ input[type="range"]::-webkit-slider-thumb {
 .modalBody {
   padding: 20px;
 }
+
+/* Tab / side panel pop animation */
+.tabPanel {
+  opacity: 0;
+  transform: translateY(10px) scale(0.985);
+  transition: opacity .18s ease, transform .18s ease;
+  will-change: opacity, transform;
+}
+
+.tabPanel.isActive {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}

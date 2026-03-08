@@ -1185,6 +1185,9 @@ async def video_ref_get(ref_filename: str):
         mt = "video/mp4"
     return FileResponse(fp, media_type=mt)
 
+@app.get("/health")
+async def health():
+    return {"ok": True}
 
 # =========================
 # DEBUG (safe)
